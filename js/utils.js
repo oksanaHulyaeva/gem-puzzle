@@ -7,7 +7,7 @@ export const shuffleArray = (arr) => {
     [shuffledArray[i], shuffledArray[j]] = [shuffledArray[j], shuffledArray[i]];
   }
 
-  return shuffleArray;
+  return shuffledArray;
 };
 
 // CREATE MATRIX FROM ARRAY
@@ -21,4 +21,20 @@ export const createField = (arr, size) => {
     matrix.push(row);
   }
   return matrix;
+};
+
+export const getCoordYFromMatrix = (matrix, value) => {
+  let coordY = null;
+  matrix.forEach((row, index) => {
+    if (row.includes(value)) coordY = index;
+  });
+  return coordY;
+};
+
+export const getCoordXFromMatrix = (matrix, value) => {
+  let coordX = null;
+  matrix.forEach((row) => {
+    if (row.includes(value)) coordX = row.indexOf(value);
+  });
+  return coordX;
 };

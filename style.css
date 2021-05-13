@@ -1,0 +1,46 @@
+* {
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.container {
+  margin-top: 100px;
+  display: flex;
+  justify-content: center;
+  gap: 50px;
+  font-family: Arial, sans-serif;
+}
+
+.field {
+  max-width: 400px;
+  max-height: 400px;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  border: 2px solid blue;
+  border-radius: 5px;
+  font-size: 32px;
+}
+
+.info {
+  width: 200px;
+  margin-bottom: 30px;
+  font-size: 20px;
+}
+
+.cell,
+.empty-cell {
+  width: 98px;
+  height: 98px;
+}
+
+.cell {
+  border: 2px solid blue;
+  border-radius: 5px;
+  text-align: center;
+  padding-top: 25px;
+}
+
+.cell:hover {
+  background: gainsboro;
+}
