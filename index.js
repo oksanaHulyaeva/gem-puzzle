@@ -1,7 +1,7 @@
 /* eslint-disable import/extensions */
 import {
   shuffleArray,
-  createField,
+  createMatrix,
   getCoordXFromMatrix,
   getCoordYFromMatrix,
 } from './js/utils.js';
@@ -12,16 +12,23 @@ class GemPuzzle {
     this.initialArray = initialArray;
     this.sideLength = Math.sqrt(initialArray.length);
     this.currentArray = shuffleArray(this.initialArray);
-    this.field = createField(this.currentArray, this.sideLength);
+    this.matrix = createMatrix(this.currentArray, this.sideLength);
     this.emptyPos = {
-      X: getCoordXFromMatrix(this.field, 0),
-      Y: getCoordYFromMatrix(this.field, 0),
+      X: getCoordXFromMatrix(this.matrix, 0),
+      Y: getCoordYFromMatrix(this.matrix, 0),
     };
-    this.isSolvable = this.checkSolvability(this.currentArray);
+    this.isSolvable = this.checkIsSolvable(this.currentArray);
+    this.isCompleted = this.checkIsCompleted();
     this.steps = 0;
   }
 
-  checkSolvability(arr) {
+  checkIsCompleted() {
+    return this.currentArray.every((elem, index) => {
+      return elem === this.initialArray[index];
+    });
+  }
+
+  checkIsSolvable(arr) {
     let counter = 0;
     for (let i = 1; i < arr.length - 1; i += 1) {
       for (let j = i - 1; j >= 0; j -= 1) {
@@ -37,18 +44,29 @@ class GemPuzzle {
     const container = document.createElement('div');
     const field = document.createElement('div');
     const info = document.createElement('div');
+    const solvability = document.createElement('p');
+
     const status = document.createElement('p');
     const steps = document.createElement('p');
-
+    const statusVar = document.createElement('span');
+    const stepsVar = document.createElement('span');
+    
     container.classList.add('container');
     field.classList.add('field');
     info.classList.add('info');
-    status.classList.add('status');
-    steps.classList.add('steps');
+    solvability.classList.add('solvability');
 
-    status.innerHTML = 'Status: ';
-    steps.innerHTML = 'Steps: ';
+    statusVar.classList.add('status');
+    stepsVar.classList.add('steps');
+    
+    solvability.append(`Solvability: ${this.isSolvable ? 'Solvable' : 'No solution'}`);
+    status.append('Status: ');
+    status.append(statusVar);
+    steps.append('Steps: ');
+    steps.append(stepsVar);
+   
 
+    info.append(solvability);
     info.append(status);
     info.append(steps);
     container.append(field);
@@ -58,10 +76,15 @@ class GemPuzzle {
 
     this.updateField();
     this.updateStatus();
+
+    field.addEventListener('click', (event) => {
+      this.moveHandler(event);
+    });
   }
 
   updateField() {
     const field = document.querySelector('.field');
+    field.innerHTML = '';
     this.currentArray.forEach((item) => {
       const cell = document.createElement('div');
       if (item !== 0) {
@@ -75,11 +98,73 @@ class GemPuzzle {
   }
 
   updateStatus() {
-    const status = document.querySelector('.status');
     const steps = document.querySelector('.steps');
+    steps.innerHTML = `${this.steps}`;
+    const status = document.querySelector('.status');
+    status.innerHTML = `${this.isCompleted ? 'Completed' : 'Not completed'}`;
+  }
 
-    status.append(`${this.isSolvable ? 'Solvable' : 'No solution'}`);
-    steps.append(`${this.steps}`);
+  updateCurrentArray(startValue, distValue) {
+    const startIndex = this.currentArray.indexOf(startValue);
+    const distIndex = this.currentArray.indexOf(distValue);
+    [this.currentArray[startIndex], this.currentArray[distIndex]] = 
+    [this.currentArray[distIndex], this.currentArray[startIndex]];
+  }
+
+  updateMatrix() {
+    this.matrix = createMatrix(this.currentArray, this.sideLength);
+  }
+
+  updateEmptyCoords(){
+    this.emptyPos = {
+      X: getCoordXFromMatrix(this.matrix, 0),
+      Y: getCoordYFromMatrix(this.matrix, 0),
+    };
+  }
+
+  checkClosestEmpty(num) {
+    for (let i = 0; i < this.currentArray.length; i += 1) {
+      if (this.currentArray[i] === num) {
+        if(this.currentArray[i - 1] === 0 || this.currentArray[i + 1] === 0) return true;
+        if(this.currentArray[i - this.sideLength] === 0 
+          || this.currentArray[i + this.sideLength] === 0) return true;
+      }
+    }
+    return false;
+  }
+
+  moveHandler(event) {
+    if (!event.target.classList.contains('cell')) return;
+    const target = +event.target.innerHTML;
+    if(!this.checkClosestEmpty(target)) return;
+    this.updateCurrentArray(target, 0);
+    this.updateMatrix();
+    this.updateEmptyCoords();
+    this.steps += 1;
+    this.updateStatus();
+    this.updateField();
+  }
+
+  findH() {
+    let counter = 0;
+    this.currentArray.forEach((elem, index) => {
+      if (elem !== index) counter += 1;
+    })
+    return counter;
+  };
+
+  solver() {
+    if(!this.isSolvable) {
+      alert('No solution');
+      return;
+    }
+
+    const H = this.findH();
+    const openList = [];
+    const hash = {};
+
+
+    
   }
 
   init() {
@@ -90,5 +175,8 @@ class GemPuzzle {
 const newPuzzle = new GemPuzzle();
 newPuzzle.init();
 
-console.log(newPuzzle.emptyPos);
-console.log(newPuzzle.isSolvable);
+// console.log(newPuzzle.emptyPos);
+// console.log(newPuzzle.isCompleted);
+
+
+

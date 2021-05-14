@@ -12,7 +12,7 @@ export const shuffleArray = (arr) => {
 
 // CREATE MATRIX FROM ARRAY
 
-export const createField = (arr, size) => {
+export const createMatrix = (arr, size) => {
   const arrCopy = arr.slice(0);
   const matrix = [];
 
