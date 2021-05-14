@@ -48,22 +48,22 @@ class GemPuzzle {
 
     const status = document.createElement('p');
     const steps = document.createElement('p');
-    const statusVar = document.createElement('span');
-    const stepsVar = document.createElement('span');
+    const statuslet = document.createElement('span');
+    const stepslet = document.createElement('span');
     
     container.classList.add('container');
     field.classList.add('field');
     info.classList.add('info');
     solvability.classList.add('solvability');
 
-    statusVar.classList.add('status');
-    stepsVar.classList.add('steps');
+    statuslet.classList.add('status');
+    stepslet.classList.add('steps');
     
     solvability.append(`Solvability: ${this.isSolvable ? 'Solvable' : 'No solution'}`);
     status.append('Status: ');
-    status.append(statusVar);
+    status.append(statuslet);
     steps.append('Steps: ');
-    steps.append(stepsVar);
+    steps.append(stepslet);
    
 
     info.append(solvability);
@@ -153,6 +153,21 @@ class GemPuzzle {
     return counter;
   };
 
+  findManhanttanDistance(arr) {
+    let totalDist = 0;
+    for (let i = 0; i < arr.length - 1; i++) {
+      if (arr[i] !== 0) {
+        let realPos = this.initialArray.indexOf(arr[i]);
+        let realCol = realPos % this.sideLength;
+        let realRow = Math.floor(realPos / this.sideLength);
+        let col = i % this.sideLength;
+        let row = Math.floor(i / this.sideLength);
+        totalDist += (Math.abs(realCol - col) + Math.abs(realRow - row));
+      }
+    }
+    return totalDist;
+  }
+
   solver() {
     if(!this.isSolvable) {
       alert('No solution');
@@ -163,8 +178,6 @@ class GemPuzzle {
     const openList = [];
     const hash = {};
 
-
-    
   }
 
   init() {
