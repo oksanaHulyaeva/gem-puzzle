@@ -18,12 +18,12 @@ class GemPuzzle {
       Y: getCoordYFromMatrix(this.matrix, 0),
     };
     this.isSolvable = this.checkIsSolvable(this.currentArray);
-    this.isCompleted = this.checkIsCompleted();
+    this.isCompleted = this.checkIsCompleted(this.currentArray);
     this.steps = 0;
   }
 
-  checkIsCompleted() {
-    return this.currentArray.every((elem, index) => {
+  checkIsCompleted(arr) {
+    return arr.every((elem, index) => {
       return elem === this.initialArray[index];
     });
   }
@@ -153,31 +153,11 @@ class GemPuzzle {
     return counter;
   };
 
-  findManhanttanDistance(arr) {
-    let totalDist = 0;
-    for (let i = 0; i < arr.length - 1; i++) {
-      if (arr[i] !== 0) {
-        let realPos = this.initialArray.indexOf(arr[i]);
-        let realCol = realPos % this.sideLength;
-        let realRow = Math.floor(realPos / this.sideLength);
-        let col = i % this.sideLength;
-        let row = Math.floor(i / this.sideLength);
-        totalDist += (Math.abs(realCol - col) + Math.abs(realRow - row));
-      }
-    }
-    return totalDist;
-  }
-
   solver() {
     if(!this.isSolvable) {
       alert('No solution');
       return;
     }
-
-    const H = this.findH();
-    const openList = [];
-    const hash = {};
-
   }
 
   init() {
